@@ -1,22 +1,9 @@
 pipeline {
     agent any
     stages {
-        stage('hello')
+        stage('version')
             steps {
-                sh 'echo "hello"'
+                sh 'python --version'
             }
-        stage('build') {
-            steps {
-                sh 'pip install flask'
-            }
-        }
-        stage('test') {
-            steps {
-                sh 'python test.py'
-            }
-            post {
-                always {junit 'test-reports/*.xml'}
-            }
-        }
     }
 }

@@ -3,7 +3,7 @@ pipeline {
     stages {
         stage('prepare') {
              steps {
-                git credentialsId: 'git-cred', url: 'https://github.com/nada809/DockerProject.git'
+                git credentialsId: 'git-cred', url: 'https://github.com/ghofrane937/projectdockerfinal.git'
                 stash name:'scm', includes:'*'
             }
         }

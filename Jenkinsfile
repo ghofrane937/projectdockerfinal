@@ -1,25 +1,34 @@
-node {
-   stage('Prepare') {
-      
-      git credentialsId: 'git-cred', url: 'https://github.com/ghofrane937/projectdockerfinal.git'
-      if (!fileExists("docker-compose.yml")) {
-         error('Docker compose missing.')
-      }
-   }
-   
-     
-   stage('Test') {
-            agent {
-                docker {
-                    image 'python:3.8-slim-buster'
-                }
+pipeline {
+    agent any
+    stages {
+        stage('prepare') {
+             steps {
+                git credentialsId: 'git-cred', url: 'https://github.com/nada809/DockerProject.git'
+                stash name:'scm', includes:'*'
             }
+        }
+        stage('Build') {
+             steps {
+                 sh "docker-compose build"
+            }
+        }
+        stage('Test') {
+            
+            
             steps {
-                sh 'pip install flask && pip install xmlrunner'
-                sh 'python app/unittests.py'
-            }
-            post {
-                always {
-                    junit 'test-reports/results.xml'
+            unstash 'scm'
+            script{
+                docker.image('python:3.8-slim-buster').inside{ 
+                    sh 'pip install -r app/requirements.txt'
+                    sh 'python app/unittests.py'
+                    
                 }
             }
+        }
+            
+        }
+       
+            
+            
+        }
+    }
